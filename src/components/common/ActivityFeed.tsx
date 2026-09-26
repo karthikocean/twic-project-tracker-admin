@@ -12,7 +12,6 @@ import {
   CreditCard,
 } from "lucide-react";
 import { ActivityItem } from "@/types";
-
 interface ActivityFeedProps {
   activities: ActivityItem[];
   limit?: number;
