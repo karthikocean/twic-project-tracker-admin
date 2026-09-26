@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -31,7 +31,9 @@ import {
   Droplets,
   Workflow,
   X,
+  Layers,
 } from "lucide-react";
+import { useModule, ModuleType } from "@/context/ModuleContext";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -54,9 +56,11 @@ interface NavSection {
 
 export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: SidebarProps) {
   const pathname = usePathname();
+  const { activeModule, setActiveModule } = useModule();
 
-  const navigationSections: NavSection[] = [
-    {
+  // Dynamically filter sidebar sections based on selected active module ("others no need")
+  const getSectionsForActiveModule = (): NavSection[] => {
+    const dashboardSection: NavSection = {
       items: [
         {
           title: "Dashboard",
@@ -64,184 +68,224 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
           icon: LayoutDashboard,
         },
         {
-          title: "Lifecycle Map",
+          title: "Master Flow Map",
           href: "/overview",
           icon: Workflow,
-          badge: "Process",
+          badge: "Flow",
         },
       ],
-    },
-    {
-      title: "Business Development",
-      items: [
+    };
+
+    if (activeModule === "ADVISORY") {
+      return [
+        dashboardSection,
         {
-          title: "Enquiries / RFQ",
-          href: "/enquiries",
-          icon: FileQuestion,
+          title: "Advisory Flow (DFR / DPR)",
+          items: [
+            {
+              title: "DFR: Enquiry / RFQ",
+              href: "/enquiries",
+              icon: FileQuestion,
+            },
+            {
+              title: "DFR: Preparation of Costing",
+              href: "/costings",
+              icon: Calculator,
+            },
+            {
+              title: "DPR: RFP & Tenders",
+              href: "/tenders",
+              icon: FileCheck2,
+            },
+            {
+              title: "DPR: Client LOA / Work Order",
+              href: "/work-orders",
+              icon: FileText,
+            },
+            {
+              title: "DPR+RFP: Approval Notes",
+              href: "/approvals",
+              icon: CheckCircle,
+            },
+            {
+              title: "DPR+RFP: Bid Evaluation",
+              href: "/evaluations",
+              icon: Award,
+            },
+            {
+              title: "Deliverables & Milestones",
+              href: "/milestones",
+              icon: Flag,
+            },
+            {
+              title: "Transaction Advisory",
+              href: "/advisory",
+              icon: Compass,
+            },
+            {
+              title: "Subcontractor Invoices",
+              href: "/subcontractors",
+              icon: Network,
+            },
+            {
+              title: "Client Invoicing & Payments",
+              href: "/invoices",
+              icon: Receipt,
+            },
+          ],
         },
+      ];
+    }
+
+    if (activeModule === "PMC") {
+      return [
+        dashboardSection,
         {
-          title: "Cost Preparation",
-          href: "/costings",
-          icon: Calculator,
+          title: "PMC Operations Flow",
+          items: [
+            {
+              title: "Enquiry / RFQ",
+              href: "/enquiries",
+              icon: FileQuestion,
+            },
+            {
+              title: "Preparation of Costing",
+              href: "/costings",
+              icon: Calculator,
+            },
+            {
+              title: "RFP / Tender Status",
+              href: "/tenders",
+              icon: FileCheck2,
+            },
+            {
+              title: "Client LOA & Work Orders",
+              href: "/work-orders",
+              icon: FileText,
+            },
+            {
+              title: "PMC Operations & Site",
+              href: "/pmc",
+              icon: Briefcase,
+            },
+            {
+              title: "Site Progress Logs",
+              href: "/progress",
+              icon: TrendingUp,
+            },
+            {
+              title: "Monthly Progress Reports",
+              href: "/reports",
+              icon: FileBarChart2,
+            },
+            {
+              title: "Milestone Tracking",
+              href: "/milestones",
+              icon: Flag,
+            },
+            {
+              title: "Client Billing & Payments",
+              href: "/invoices",
+              icon: Receipt,
+            },
+          ],
         },
-      ],
-    },
-    {
-      title: "Advisory & PMC",
-      items: [
+      ];
+    }
+
+    if (activeModule === "OM") {
+      return [
+        dashboardSection,
         {
-          title: "Advisory (DPR & PPP)",
-          href: "/advisory",
-          icon: Compass,
+          title: "O&M Plant Operations Flow",
+          items: [
+            {
+              title: "Water Treatment Plants",
+              href: "/plants",
+              icon: Cpu,
+            },
+            {
+              title: "Pre-Treatment Facilities",
+              href: "/plants?tab=pretreatment",
+              icon: Droplets,
+            },
+            {
+              title: "RO Stages",
+              href: "/plants?tab=ro",
+              icon: Layers,
+            },
+            {
+              title: "Crystallizer Units",
+              href: "/plants?tab=crystallizer",
+              icon: Cpu,
+            },
+            {
+              title: "Utility Services / ATFD",
+              href: "/plants?tab=atfd",
+              icon: Workflow,
+            },
+          ],
         },
+      ];
+    }
+
+    if (activeModule === "USER_MANAGEMENT") {
+      return [
+        dashboardSection,
         {
-          title: "PMC Module",
-          href: "/pmc",
-          icon: Briefcase,
+          title: "User Management Module",
+          items: [
+            {
+              title: "User Management Hub",
+              href: "/user-management",
+              icon: Users2,
+              badge: "Hub",
+            },
+            {
+              title: "Users Directory",
+              href: "/users",
+              icon: UserCheck,
+            },
+            {
+              title: "Roles & Permissions",
+              href: "/roles",
+              icon: ShieldAlert,
+            },
+            {
+              title: "Audit Trail & Logs",
+              href: "/audit-logs",
+              icon: FileText,
+            },
+            {
+              title: "Settings & Configurations",
+              href: "/settings",
+              icon: Settings,
+            },
+          ],
         },
-      ],
-    },
-    {
-      title: "Tender Management",
-      items: [
-        {
-          title: "Tenders",
-          href: "/tenders",
-          icon: FileCheck2,
-        },
-        {
-          title: "Tender Applications",
-          href: "/tender-applications",
-          icon: Inbox,
-        },
-        {
-          title: "Evaluation",
-          href: "/evaluations",
-          icon: Award,
-        },
-      ],
-    },
-    {
-      title: "Vendors & Contractors",
-      items: [
-        {
-          title: "Vendors Directory",
-          href: "/vendors",
-          icon: Users2,
-        },
-        {
-          title: "Pre-Qualification",
-          href: "/pre-qualification",
-          icon: FileBadge2,
-        },
-      ],
-    },
-    {
-      title: "Projects Execution",
-      items: [
-        {
-          title: "Work Orders (LOA)",
-          href: "/work-orders",
-          icon: FileText,
-        },
-        {
-          title: "Projects",
-          href: "/projects",
-          icon: Briefcase,
-        },
-        {
-          title: "Milestones",
-          href: "/milestones",
-          icon: Flag,
-        },
-        {
-          title: "Project Progress",
-          href: "/progress",
-          icon: TrendingUp,
-        },
-      ],
-    },
-    {
-      title: "Subcontractors",
-      items: [
-        {
-          title: "Subcontractors",
-          href: "/subcontractors",
-          icon: Network,
-        },
-      ],
-    },
-    {
-      title: "Plant Operations (O&M)",
-      items: [
-        {
-          title: "O&M Plants",
-          href: "/plants",
-          icon: Cpu,
-        },
-      ],
-    },
-    {
-      title: "Finance & Accounts",
-      items: [
-        {
-          title: "Invoices",
-          href: "/invoices",
-          icon: Receipt,
-        },
-        {
-          title: "Payments",
-          href: "/payments",
-          icon: CreditCard,
-        },
-      ],
-    },
-    {
-      title: "Governance & Reports",
-      items: [
-        {
-          title: "Approvals",
-          href: "/approvals",
-          icon: CheckCircle,
-        },
-        {
-          title: "Reports & Analytics",
-          href: "/reports",
-          icon: FileBarChart2,
-        },
-      ],
-    },
-    {
-      title: "Administration",
-      items: [
-        {
-          title: "Clients Directory",
-          href: "/clients",
-          icon: Users2,
-        },
-        {
-          title: "Users Management",
-          href: "/users",
-          icon: UserCheck,
-        },
-        {
-          title: "Roles & Permissions",
-          href: "/roles",
-          icon: ShieldAlert,
-        },
-        {
-          title: "Audit Logs",
-          href: "/audit-logs",
-          icon: ShieldAlert,
-        },
-        {
-          title: "Settings",
-          href: "/settings",
-          icon: Settings,
-        },
-      ],
-    },
-  ];
+      ];
+    }
+
+    // Default fallback to Advisory
+    return [dashboardSection];
+  };
+
+  const navigationSections = getSectionsForActiveModule();
+
+  const getModuleLabel = () => {
+    switch (activeModule) {
+      case "ADVISORY":
+        return "Advisory Module";
+      case "PMC":
+        return "PMC Module";
+      case "OM":
+        return "Plant Operations (O&M)";
+      case "USER_MANAGEMENT":
+        return "User Management";
+      default:
+        return "General Workspace";
+    }
+  };
 
   return (
     <>
@@ -277,22 +321,22 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
             )}
           </div>
 
-          {/* Close mobile button */}
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1 text-slate-400 hover:text-white rounded-md lg:hidden"
-            aria-label="Close sidebar"
-          >
-            <X className="h-5 w-5" />
-          </button>
+          {/* Close button on mobile */}
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="lg:hidden p-1 text-slate-400 hover:text-white rounded-md"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
 
-          {/* Desktop Collapse toggle button */}
+          {/* Collapse/Expand Toggle (Desktop only) */}
           <button
             type="button"
             onClick={onToggleCollapse}
-            className="hidden lg:flex p-1 text-slate-400 hover:text-white hover:bg-slate-800 rounded-md transition-colors"
-            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            className="hidden lg:flex h-7 w-7 items-center justify-center rounded-md border border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-white transition-colors cursor-pointer"
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {isCollapsed ? (
               <ChevronRight className="h-4 w-4" />
@@ -302,41 +346,62 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
           </button>
         </div>
 
-        {/* Scrollable Navigation items */}
-        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
-          {navigationSections.map((section, sIdx) => (
-            <div key={sIdx} className="space-y-1">
+        {/* Current Active Module Context Indicator */}
+        {!isCollapsed && (
+          <div className="px-3 pt-3 pb-1">
+            <div className="bg-slate-950/90 border border-blue-900/60 rounded-xl px-3 py-2 flex items-center justify-between">
+              <div>
+                <span className="text-[9px] uppercase tracking-wider font-bold text-blue-400 block">
+                  Active Scope
+                </span>
+                <span className="text-xs font-bold text-white truncate block">
+                  {getModuleLabel()}
+                </span>
+              </div>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            </div>
+          </div>
+        )}
+
+        {/* Navigation Items (Filtered ONLY to active module) */}
+        <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
+          {navigationSections.map((section, idx) => (
+            <div key={idx} className="space-y-1">
               {section.title && !isCollapsed && (
-                <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                <div className="px-2 pb-1.5 pt-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                   {section.title}
-                </p>
+                </div>
               )}
               {section.items.map((item) => {
-                const Icon = item.icon;
                 const isActive =
                   pathname === item.href ||
-                  (item.href !== "/dashboard" && pathname.startsWith(item.href + "/"));
+                  (item.href !== "/dashboard" && pathname.startsWith(item.href.split("?")[0]));
+                const Icon = item.icon;
 
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={onClose}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-all group ${
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
                       isActive
                         ? "bg-blue-600 text-white font-semibold shadow-xs"
-                        : "text-slate-400 hover:text-slate-100 hover:bg-slate-800/80"
-                    }`}
+                        : "text-slate-300 hover:bg-slate-800/80 hover:text-white"
+                    } ${isCollapsed ? "justify-center px-0" : ""}`}
                     title={isCollapsed ? item.title : undefined}
                   >
-                    <Icon
-                      className={`h-4 w-4 shrink-0 transition-colors ${
-                        isActive ? "text-white" : "text-slate-400 group-hover:text-slate-200"
-                      }`}
-                    />
-                    {!isCollapsed && <span className="truncate flex-1">{item.title}</span>}
+                    <Icon className="h-4 w-4 shrink-0" />
+                    {!isCollapsed && (
+                      <span className="truncate flex-1">{item.title}</span>
+                    )}
                     {!isCollapsed && item.badge && (
-                      <span className="px-1.5 py-0.5 text-[9px] font-bold rounded bg-slate-800 text-blue-400 border border-slate-700">
+                      <span
+                        className={`text-[10px] px-1.5 py-0.2 rounded font-mono font-bold ${
+                          isActive
+                            ? "bg-white/20 text-white"
+                            : "bg-blue-950 text-blue-300 border border-blue-800"
+                        }`}
+                      >
                         {item.badge}
                       </span>
                     )}

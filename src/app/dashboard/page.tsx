@@ -242,16 +242,14 @@ export default function DashboardPage() {
         />
       </div>
 
+
+
       {/* Recharts Data Visualizations (Section 12) */}
       {chartsData && (
         <div className="mb-6">
           <DashboardCharts
             projectProgressData={chartsData.projectProgress}
             tenderStatusData={chartsData.tenderStatus}
-            invoiceStatusData={chartsData.invoiceStatus}
-            paymentSummaryData={chartsData.paymentSummary}
-            enquiryPipelineData={chartsData.enquiryPipeline}
-            plantStatusData={chartsData.plantStatus}
           />
         </div>
       )}
