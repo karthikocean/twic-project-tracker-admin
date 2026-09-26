@@ -141,13 +141,6 @@ export default function DashboardPage() {
         actions={
           <div className="flex items-center gap-2">
             <Link
-              href="/overview"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition-colors"
-            >
-              <TrendingUp className="h-3.5 w-3.5" />
-              <span>Interactive Lifecycle Map</span>
-            </Link>
-            <Link
               href="/enquiries/new"
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-xs transition-colors"
             >
