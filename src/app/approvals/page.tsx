@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import {
   CheckCircle,
   Clock,
@@ -11,6 +12,7 @@ import {
   ShieldCheck,
   Calendar,
   User,
+  Plus,
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { PageHeader } from "@/components/common/PageHeader";
@@ -142,6 +144,15 @@ export default function ApprovalsPage() {
         title="Multi-Level Governance Approvals"
         subtitle="Tiered approval hierarchy: Level 1 (Project Manager), Level 2 (COO), and Level 3 (MD / Board)."
         breadcrumbs={[{ label: "Approvals" }]}
+        actions={
+          <Link
+            href="/approvals/new"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-xs transition-colors"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            <span>Request Approval</span>
+          </Link>
+        }
       />
 
       {toastMessage && (

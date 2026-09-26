@@ -58,3 +58,8 @@ body {
     padding: 0 !important;
   }
 }
+
+/* Hide Next.js dev indicator badge */
+nextjs-portal {
+  display: none !important;
+}

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Sidebar } from "./Sidebar";
-import { Header } from "./Header";
+import { Menu } from "lucide-react";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -37,12 +37,21 @@ export function AppLayout({ children, title }: AppLayoutProps) {
 
       {/* Main Content Area */}
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-        {/* Header */}
-        <Header title={title} onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        {/* Mobile sidebar toggle button (visible only on small screens) */}
+        <div className="lg:hidden p-3 pb-0 flex items-center">
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded-lg shadow-2xs"
+            aria-label="Open sidebar"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+        </div>
 
         {/* Content Viewport */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-          <div className="max-w-7xl mx-auto">{children}</div>
+        <main className="flex-1 overflow-y-auto p-4 md:p-5 lg:p-6">
+          <div className="w-full">{children}</div>
         </main>
       </div>
     </div>

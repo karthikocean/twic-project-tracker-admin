@@ -319,7 +319,7 @@ export default function NewPreQualificationFormPage() {
         </div>
       </div>
 
-      <div className="space-y-6 max-w-4xl">
+      <div className="space-y-6 w-full">
         {/* SECTION 1: COMPANY INFORMATION */}
         {activeStep === 1 && (
           <FormSection

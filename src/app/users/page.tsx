@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { PageHeader } from "@/components/common/PageHeader";
 import { DataTable, Column } from "@/components/common/DataTable";
@@ -8,7 +9,7 @@ import { StatusBadge } from "@/components/common/StatusBadge";
 import { userService } from "@/services/userService";
 import { User, UserRole } from "@/types";
 import { formatDate } from "@/utils/formatters";
-import { Mail, AlertCircle } from "lucide-react";
+import { Mail, AlertCircle, UserPlus } from "lucide-react";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -116,6 +117,15 @@ export default function UsersPage() {
           { label: "Administration" },
           { label: "Users" },
         ]}
+        actions={
+          <Link
+            href="/users/new"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-xs transition-colors"
+          >
+            <UserPlus className="h-3.5 w-3.5" />
+            <span>Add New User</span>
+          </Link>
+        }
       />
 
       {/* Notice Banner */}

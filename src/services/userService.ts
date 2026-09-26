@@ -27,7 +27,40 @@ export async function updateUserRole(id: string, role: UserRole): Promise<User> 
   return res.json();
 }
 
+export async function createUser(data: {
+  name: string;
+  email: string;
+  department: string;
+  role: UserRole;
+  status?: "Active" | "Inactive";
+}): Promise<User> {
+  if (USE_MOCK_DATA) {
+    await delay();
+    const users = mockStorage.getUsers();
+    const newUser: User = {
+      id: `usr-${Date.now()}`,
+      name: data.name,
+      email: data.email,
+      department: data.department,
+      role: data.role,
+      status: data.status || "Active",
+      lastLogin: "",
+    };
+    const updated = [newUser, ...users];
+    mockStorage.saveUsers(updated);
+    return newUser;
+  }
+  const res = await fetch("/api/users", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
 export const userService = {
   getUsers,
   updateUserRole,
+  createUser,
 };
+

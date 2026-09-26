@@ -72,7 +72,7 @@ export default function NewClientPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-4xl">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-full">
         <FormSection
           title="Organization Details"
           description="Official title and administrative code for tender tagging."

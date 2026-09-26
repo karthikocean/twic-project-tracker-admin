@@ -346,17 +346,6 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
             </div>
           ))}
         </div>
-
-        {/* Footer info in sidebar */}
-        {!isCollapsed && (
-          <div className="p-3 border-t border-slate-800 bg-slate-950/40 text-[11px] text-slate-400">
-            <div className="flex items-center justify-between font-medium">
-              <span>TWIC Demo Mode</span>
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            </div>
-            <p className="text-[10px] text-slate-500 mt-0.5">Frontend Only • Mock API Active</p>
-          </div>
-        )}
       </aside>
     </>
   );

@@ -146,26 +146,6 @@ export default function CostingDetailPage({ params }: { params: Promise<{ id: st
           { label: "Cost Preparation", href: "/costings" },
           { label: costing.costingNumber },
         ]}
-        actions={
-          <div className="flex items-center gap-2">
-            <Link
-              href="/costings"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              <span>Back</span>
-            </Link>
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={isSaving}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-xs transition-colors"
-            >
-              <Save className="h-3.5 w-3.5" />
-              <span>{isSaving ? "Saving..." : "Save Worksheet"}</span>
-            </button>
-          </div>
-        }
       />
 
       {saveToast && (
@@ -192,9 +172,9 @@ export default function CostingDetailPage({ params }: { params: Promise<{ id: st
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Columns: Cost Items by Section */}
-        <div className="lg:col-span-2 space-y-6">
+      <div className="w-full space-y-6">
+        {/* Cost Items by Category (Full Width) */}
+        <div className="space-y-6">
           {categories.map((category) => {
             const catItems = items.filter((it) => it.category === category);
             const catTotal = catItems.reduce((sum, it) => sum + (it.total || 0), 0);
@@ -320,92 +300,107 @@ export default function CostingDetailPage({ params }: { params: Promise<{ id: st
           </div>
         </div>
 
-        {/* Right Column: Dynamic Price Summary Card (Section 18 Display) */}
-        <div className="space-y-6">
-          <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-xs sticky top-20 space-y-5">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                Commercial Summary
+        {/* Full-Width Commercial Summary & Quotation Calculation */}
+        <div className="bg-white rounded-xl border border-slate-200/90 p-5 md:p-6 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3.5 mb-5 border-b border-slate-100 gap-2">
+            <div className="flex items-center gap-2.5">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                Commercial Summary & Final Quotation
               </span>
               <StatusBadge status={costing.status} size="sm" />
             </div>
+            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500">
+              <span><strong>Enquiry:</strong> {costing.enquiryNumber}</span>
+              <span><strong>Client:</strong> {costing.clientName}</span>
+              <span><strong>Updated:</strong> {formatDate(costing.updatedAt)}</span>
+            </div>
+          </div>
 
-            <div className="space-y-3.5 text-xs">
-              <div className="flex justify-between items-center text-slate-600">
-                <span>Base Direct Cost (Total)</span>
-                <span className="font-semibold text-slate-900 text-sm">{formatINR(baseCost)}</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
+            {/* Base Direct Cost */}
+            <div className="p-4 bg-slate-50 border border-slate-200/70 rounded-xl flex flex-col justify-between">
+              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+                Base Direct Cost
+              </span>
+              <div className="mt-3">
+                <span className="text-xl font-bold text-slate-900">{formatINR(baseCost)}</span>
+                <p className="text-[10px] text-slate-400 mt-1">Aggregated line-item subtotal</p>
               </div>
+            </div>
 
-              {/* Profit Margin Controls */}
-              <div className="pt-2 border-t border-slate-100 space-y-2">
-                <div className="flex justify-between items-center">
-                  <label className="font-semibold text-slate-700">Project Margin (%)</label>
-                  <div className="flex items-center gap-1">
-                    <input
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={marginPercent}
-                      onChange={(e) => setMarginPercent(Number(e.target.value))}
-                      className="w-16 px-2 py-1 text-xs border border-slate-300 rounded text-right font-bold text-slate-900"
-                    />
-                    <span className="text-xs font-semibold text-slate-500">%</span>
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center text-slate-600">
-                  <span>Margin Addition</span>
-                  <span className="font-semibold text-emerald-600">+{formatINR(marginAmount)}</span>
-                </div>
-              </div>
-
-              {/* Subtotal */}
-              <div className="flex justify-between items-center pt-2 border-t border-slate-100 font-semibold text-slate-800">
-                <span>Subtotal (Before GST)</span>
-                <span>{formatINR(subtotal)}</span>
-              </div>
-
-              {/* Taxes (18% GST typical for Gov contracts) */}
-              <div className="flex justify-between items-center text-slate-600">
-                <span>GST (Statutory 18%)</span>
-                <span>+{formatINR(taxesAmount)}</span>
-              </div>
-
-              {/* Final Quotation */}
-              <div className="p-4 bg-slate-900 text-white rounded-lg space-y-1">
-                <span className="text-[11px] uppercase tracking-wider text-slate-400 block font-semibold">
-                  Final Quotation
+            {/* Profit Margin Controls */}
+            <div className="p-4 bg-slate-50 border border-slate-200/70 rounded-xl flex flex-col justify-between">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+                  Project Margin
                 </span>
-                <p className="text-xl font-bold tracking-tight">{formatINR(finalQuotation)}</p>
-                <p className="text-[10px] text-slate-400 font-mono">
+                <div className="flex items-center gap-1">
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={marginPercent}
+                    onChange={(e) => setMarginPercent(Number(e.target.value))}
+                    className="w-16 px-2 py-1 text-xs bg-white border border-slate-300 rounded-md text-right font-bold text-slate-900 focus:outline-hidden focus:ring-1 focus:ring-blue-600"
+                  />
+                  <span className="text-xs font-semibold text-slate-500">%</span>
+                </div>
+              </div>
+              <div className="mt-3 flex items-baseline justify-between border-t border-slate-200/60 pt-2">
+                <span className="text-xs text-slate-500">Margin Addition:</span>
+                <span className="text-sm font-bold text-emerald-600">+{formatINR(marginAmount)}</span>
+              </div>
+            </div>
+
+            {/* Subtotal & Statutory GST */}
+            <div className="p-4 bg-slate-50 border border-slate-200/70 rounded-xl flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-500">Subtotal (Pre-GST):</span>
+                  <span className="font-semibold text-slate-800">{formatINR(subtotal)}</span>
+                </div>
+                <div className="flex items-center justify-between text-xs mt-2 border-t border-slate-200/60 pt-2">
+                  <span className="text-slate-500">GST (Statutory 18%):</span>
+                  <span className="font-semibold text-slate-800">+{formatINR(taxesAmount)}</span>
+                </div>
+              </div>
+              <p className="text-[10px] text-slate-400 mt-1">18% statutory tax compliance</p>
+            </div>
+
+            {/* Final Quotation Display */}
+            <div className="p-4 bg-slate-900 text-white rounded-xl flex flex-col justify-between shadow-sm">
+              <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">
+                Final Quotation Value
+              </span>
+              <div className="mt-2">
+                <p className="text-2xl font-extrabold tracking-tight text-white">{formatINR(finalQuotation)}</p>
+                <p className="text-xs text-blue-300 font-mono mt-0.5">
                   {formatINRCrores(finalQuotation)}
                 </p>
               </div>
-
-              <div className="pt-2 text-[11px] text-slate-500 space-y-1 border-t border-slate-100">
-                <p>
-                  <strong>Linked Enquiry:</strong> {costing.enquiryNumber}
-                </p>
-                <p>
-                  <strong>Client:</strong> {costing.clientName}
-                </p>
-                <p>
-                  <strong>Last Updated:</strong> {formatDate(costing.updatedAt)}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={handleSave}
-                disabled={isSaving}
-                className="w-full mt-3 py-2 px-3 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-md shadow-xs transition-colors flex items-center justify-center gap-1.5"
-              >
-                <Save className="h-3.5 w-3.5" />
-                <span>{isSaving ? "Saving..." : "Save Quotation"}</span>
-              </button>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Bottom Action Footer Bar */}
+      <div className="mt-8 flex items-center justify-between p-4 bg-white border border-slate-200 rounded-xl shadow-2xs">
+        <Link
+          href="/costings"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 rounded-lg transition-colors shadow-2xs"
+        >
+          <ArrowLeft className="h-3.5 w-3.5 text-slate-500" />
+          <span>Back to Costings</span>
+        </Link>
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={isSaving}
+          className="inline-flex items-center gap-2 px-6 py-2 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-sm transition-all hover:shadow-md disabled:opacity-50 cursor-pointer"
+        >
+          <Save className="h-4 w-4" />
+          <span>{isSaving ? "Saving..." : "Save Worksheet"}</span>
+        </button>
       </div>
     </AppLayout>
   );

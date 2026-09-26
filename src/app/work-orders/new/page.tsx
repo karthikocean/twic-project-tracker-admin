@@ -94,7 +94,7 @@ export default function NewWorkOrderPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-4xl">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 w-full">
         <FormSection
           title="Project & Awardee Selection"
           description="Link work order to project and select approved contractor."
