@@ -3,7 +3,16 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
-export type ModuleType = "ADVISORY" | "PMC" | "OM" | "USER_MANAGEMENT" | "MONITORING" | "DASHBOARD";
+export type ModuleType =
+  | "ADVISORY"
+  | "PMC"
+  | "PROJECT_MONITORING"
+  | "SUBCONTRACTOR"
+  | "INVOICING_PAYMENTS"
+  | "OM"
+  | "USER_MANAGEMENT"
+  | "MONITORING"
+  | "DASHBOARD";
 
 interface ModuleContextType {
   activeModule: ModuleType;
@@ -30,13 +39,21 @@ export function ModuleProvider({ children }: { children: React.ReactNode }) {
     ) {
       setActiveModuleState("USER_MANAGEMENT");
     } else if (
-      pathname.startsWith("/pmc") ||
       pathname.startsWith("/progress") ||
       pathname.startsWith("/reports")
     ) {
-      setActiveModuleState("PMC");
+      setActiveModuleState("PROJECT_MONITORING");
+    } else if (pathname.startsWith("/subcontractors")) {
+      setActiveModuleState("SUBCONTRACTOR");
+    } else if (
+      pathname.startsWith("/invoices") ||
+      pathname.startsWith("/payments")
+    ) {
+      setActiveModuleState("INVOICING_PAYMENTS");
     } else if (pathname.startsWith("/plants")) {
       setActiveModuleState("OM");
+    } else if (pathname.startsWith("/pmc")) {
+      setActiveModuleState("PMC");
     } else if (
       pathname.startsWith("/advisory") ||
       pathname.startsWith("/enquiries") ||
@@ -46,18 +63,13 @@ export function ModuleProvider({ children }: { children: React.ReactNode }) {
       pathname.startsWith("/evaluations") ||
       pathname.startsWith("/work-orders") ||
       pathname.startsWith("/milestones") ||
-      pathname.startsWith("/approvals")
+      pathname.startsWith("/approvals") ||
+      pathname.startsWith("/clients") ||
+      pathname.startsWith("/vendors") ||
+      pathname.startsWith("/pre-qualification") ||
+      pathname.startsWith("/projects")
     ) {
       setActiveModuleState("ADVISORY");
-    } else if (
-      pathname.startsWith("/subcontractors") ||
-      pathname.startsWith("/pre-qualification") ||
-      pathname.startsWith("/vendors") ||
-      pathname.startsWith("/invoices") ||
-      pathname.startsWith("/payments")
-    ) {
-      // Default to ADVISORY or keep active
-      setActiveModuleState((prev) => (prev === "PMC" ? "PMC" : "ADVISORY"));
     } else if (pathname === "/dashboard" || pathname === "/overview") {
       const saved = localStorage.getItem("twic_active_module");
       if (saved) {

@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -122,16 +123,6 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
               href: "/advisory",
               icon: Compass,
             },
-            {
-              title: "Subcontractor Invoices",
-              href: "/subcontractors",
-              icon: Network,
-            },
-            {
-              title: "Client Invoicing & Payments",
-              href: "/invoices",
-              icon: Receipt,
-            },
           ],
         },
       ];
@@ -169,24 +160,77 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
               icon: Briefcase,
             },
             {
-              title: "Site Progress Logs",
-              href: "/progress",
-              icon: TrendingUp,
-            },
-            {
-              title: "Monthly Progress Reports",
-              href: "/reports",
-              icon: FileBarChart2,
-            },
-            {
               title: "Milestone Tracking",
               href: "/milestones",
               icon: Flag,
             },
+          ],
+        },
+      ];
+    }
+
+    if (activeModule === "PROJECT_MONITORING") {
+      return [
+        dashboardSection,
+        {
+          title: "Project Monitoring",
+          items: [
             {
-              title: "Client Billing & Payments",
-              href: "/invoices",
+              title: "Work Progress",
+              href: "/progress",
+              icon: TrendingUp,
+            },
+            {
+              title: "Report Preparation",
+              href: "/reports",
+              icon: FileBarChart2,
+            },
+          ],
+        },
+      ];
+    }
+
+    if (activeModule === "SUBCONTRACTOR") {
+      return [
+        dashboardSection,
+        {
+          title: "Subcontractor",
+          items: [
+            {
+              title: "Work Progress",
+              href: "/subcontractors/progress",
+              icon: TrendingUp,
+            },
+            {
+              title: "Subcontractors Directory",
+              href: "/subcontractors",
+              icon: Network,
+            },
+          ],
+        },
+      ];
+    }
+
+    if (activeModule === "INVOICING_PAYMENTS") {
+      return [
+        dashboardSection,
+        {
+          title: "Invoicing & Payments",
+          items: [
+            {
+              title: "Client Invoices",
+              href: "/invoices/client",
               icon: Receipt,
+            },
+            {
+              title: "Subcontractor Invoices",
+              href: "/invoices/subcontractor",
+              icon: FileText,
+            },
+            {
+              title: "Payment Status",
+              href: "/payments",
+              icon: CreditCard,
             },
           ],
         },
@@ -278,6 +322,12 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
         return "Advisory Module";
       case "PMC":
         return "PMC Module";
+      case "PROJECT_MONITORING":
+        return "Project Monitoring";
+      case "SUBCONTRACTOR":
+        return "Subcontractor Module";
+      case "INVOICING_PAYMENTS":
+        return "Invoicing & Payments";
       case "OM":
         return "Plant Operations (O&M)";
       case "USER_MANAGEMENT":
@@ -306,16 +356,22 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
         {/* Logo / Header */}
         <div className="flex h-16 items-center justify-between px-4 border-b border-slate-800 bg-slate-950/60">
           <div className="flex items-center gap-2.5 overflow-hidden">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white font-black text-base shadow-sm">
-              <Droplets className="h-5 w-5" />
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white p-1 text-white shadow-xs">
+              <Image
+                src="/twic-logo.png"
+                alt="TWIC Project ERP"
+                width={36}
+                height={36}
+                className="w-full h-full object-contain"
+              />
             </div>
             {!isCollapsed && (
               <div className="leading-tight truncate">
                 <span className="font-bold text-white text-sm tracking-wide block">
-                  TWIC TRACKER
+                  TWIC Project ERP
                 </span>
                 <span className="text-[10px] text-slate-400 font-medium tracking-tight">
-                  Water & Infra Project ERP
+                  Water &amp; Infra Project ERP
                 </span>
               </div>
             )}

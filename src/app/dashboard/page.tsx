@@ -136,7 +136,7 @@ export default function DashboardPage() {
   return (
     <AppLayout title="Executive Overview & Project Dashboard">
       <PageHeader
-        title="TWIC Project Tracker Dashboard"
+        title="TWIC Project ERP Dashboard"
         subtitle="Consolidated executive view of government water, desalination, effluent treatment, and infrastructure projects."
         actions={
           <div className="flex items-center gap-2">
@@ -255,10 +255,10 @@ export default function DashboardPage() {
       )}
 
       {/* Bottom Section: Project Table & Recent Activities (Section 13 & 14) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
         {/* Main Dashboard Projects Table */}
-        <div className="lg:col-span-2 space-y-3">
-          <div className="flex items-center justify-between">
+        <div className="lg:col-span-2 space-y-3 flex flex-col">
+          <div className="flex items-center justify-between min-h-[38px]">
             <div>
               <h3 className="text-sm font-semibold text-slate-900">
                 Active Infrastructure Projects
@@ -287,22 +287,36 @@ export default function DashboardPage() {
           />
         </div>
 
-        {/* Recent Activities Timeline */}
-        <div className="bg-white rounded-lg border border-slate-200 p-5 shadow-xs">
-          <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+        {/* Recent Activities Timeline - Simplified & Equal in size to left card */}
+        <div className="space-y-3 flex flex-col">
+          <div className="flex items-center justify-between min-h-[38px]">
             <div>
               <h3 className="text-sm font-semibold text-slate-900">Recent System Activity</h3>
               <p className="text-xs text-slate-500">Chronological governance audit trail</p>
             </div>
             <Link
               href="/audit-logs"
-              className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+              className="text-xs font-semibold text-blue-600 hover:text-blue-800 inline-flex items-center gap-1"
             >
-              Full Log
+              <span>Full Log</span>
+              <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
           </div>
 
-          <ActivityFeed activities={activities} limit={7} />
+          <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-xs flex-1 flex flex-col justify-between">
+            <ActivityFeed activities={activities} limit={5} />
+
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 mt-auto">
+              <span>Showing latest 5 events</span>
+              <Link
+                href="/audit-logs"
+                className="text-blue-600 hover:text-blue-800 hover:underline font-medium inline-flex items-center gap-1"
+              >
+                <span>Audit Logs</span>
+                <ArrowUpRight className="h-3 w-3" />
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </AppLayout>

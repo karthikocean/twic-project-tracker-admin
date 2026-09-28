@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
   ChevronDown,
@@ -51,8 +52,8 @@ export function TopNavigationBar({
   const pathname = usePathname();
   const router = useRouter();
   const { activeModule, setActiveModule } = useModule();
-  const [hoveredMenu, setHoveredMenu] = useState<ModuleType | null>(null);
-  const [activeSubParentTitle, setActiveSubParentTitle] = useState<string>("DFR");
+  const [openMenu, setOpenMenu] = useState<ModuleType | null>(null);
+  const [activeSubParentTitle, setActiveSubParentTitle] = useState<string>("Detailed Feasibility Report");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
 
@@ -98,14 +99,14 @@ export function TopNavigationBar({
       defaultHref: "/advisory",
       subParents: [
         {
-          title: "DFR",
+          title: "Detailed Feasibility Report",
           children: [
             { title: "Enquiry / RFQ", href: "/enquiries" },
             { title: "Preparation of Costing", href: "/costings" },
           ],
         },
         {
-          title: "DPR",
+          title: "Detailed Project Report",
           children: [
             { title: "RFP / Tender Upload Status", href: "/tenders" },
             { title: "LOA / Work Order received from Client", href: "/work-orders" },
@@ -129,7 +130,6 @@ export function TopNavigationBar({
             { title: "Feasibility Studies & Approvals", href: "/advisory" },
           ],
         },
-
       ],
     },
     {
@@ -150,16 +150,51 @@ export function TopNavigationBar({
           title: "Consultancy Logistics",
           children: [
             { title: "Approval Note for engaging Expert / Manpower & Vehicle / Guesthouse", href: "/pmc" },
-            { title: "Monthly Report", href: "/reports" },
             { title: "Milestone Status", href: "/milestones" },
           ],
         },
+      ],
+    },
+    {
+      id: "PROJECT_MONITORING",
+      title: "PROJECT MONITORING",
+      defaultHref: "/progress",
+      subParents: [
         {
-          title: "Work / Project Monitoring Status",
+          title: "Project Monitoring",
           children: [
-            { title: "Work Progress / Report Preparation Status", href: "/progress" },
-            { title: "Invoice Status - Subcontractor", href: "/invoices" },
-            { title: "Invoice Status - Client", href: "/invoices" },
+            { title: "Work Progress", href: "/progress" },
+            { title: "Report Preparation", href: "/reports" },
+          ],
+        },
+      ],
+    },
+    {
+      id: "SUBCONTRACTOR",
+      title: "SUBCONTRACTOR",
+      defaultHref: "/subcontractors",
+      subParents: [
+        {
+          title: "Subcontractor",
+          children: [
+            { title: "Subcontractors Dashboard", href: "/subcontractors" },
+            { title: "Work Progress", href: "/subcontractors/progress" },
+            { title: "Subcontractors Directory", href: "/subcontractors" },
+          ],
+        },
+      ],
+    },
+    {
+      id: "INVOICING_PAYMENTS",
+      title: "INVOICING & PAYMENTS",
+      defaultHref: "/invoices",
+      subParents: [
+        {
+          title: "Invoicing & Payments",
+          children: [
+            { title: "Invoicing Dashboard", href: "/invoices" },
+            { title: "Client Invoices", href: "/invoices/client" },
+            { title: "Subcontractor Invoices", href: "/invoices/subcontractor" },
             { title: "Payment Status", href: "/payments" },
           ],
         },
@@ -219,11 +254,25 @@ export function TopNavigationBar({
     },
   ];
 
-  // Set default active sub-parent when menu is hovered
+  // Open menu on hover
   const handleMenuHover = (sec: TopMenuSection) => {
-    setHoveredMenu(sec.id);
+    setOpenMenu(sec.id);
     if (sec.subParents.length > 0) {
       setActiveSubParentTitle(sec.subParents[0].title);
+    }
+  };
+
+  // Toggle menu on click/tap (supports touch, device emulation, and click navigation)
+  const handleMenuToggle = (e: React.MouseEvent, sec: TopMenuSection) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (openMenu === sec.id) {
+      setOpenMenu(null);
+    } else {
+      setOpenMenu(sec.id);
+      if (sec.subParents.length > 0) {
+        setActiveSubParentTitle(sec.subParents[0].title);
+      }
     }
   };
 
@@ -231,7 +280,7 @@ export function TopNavigationBar({
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (navRef.current && !navRef.current.contains(event.target as Node)) {
-        setHoveredMenu(null);
+        setOpenMenu(null);
         setIsProfileOpen(false);
       }
     }
@@ -241,14 +290,14 @@ export function TopNavigationBar({
 
   // Close on route change
   useEffect(() => {
-    setHoveredMenu(null);
+    setOpenMenu(null);
     setIsProfileOpen(false);
     setMobileMenuOpen(false);
   }, [pathname]);
 
   const handleSelectModule = (modId: ModuleType, defaultHref: string) => {
     setActiveModule(modId);
-    setHoveredMenu(null);
+    setOpenMenu(null);
     router.push(defaultHref);
   };
 
@@ -305,61 +354,68 @@ export function TopNavigationBar({
     .join("");
 
   // Find currently active section and sub-parent for flyout
-  const currentSection = menuSections.find((s) => s.id === hoveredMenu);
+  const currentSection = menuSections.find((s) => s.id === openMenu);
   const currentSubParent = currentSection?.subParents.find(
     (sp) => sp.title === activeSubParentTitle
   ) || currentSection?.subParents[0];
 
   return (
     <header ref={navRef} className="relative z-50 w-full select-none">
-      {/* Top Banner (Government Identification Header) */}
-      <div className="bg-[#001733] border-b border-[#00264d] text-white px-4 py-2 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Link href="/dashboard" className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold shadow-xs">
-              <Droplets className="w-4 h-4" />
+      {/* Top Banner (Government Identification Header) - Increased Width & Height */}
+      <div className="bg-[#001733] border-b border-[#00264d] text-white px-5 sm:px-8 py-3.5 sm:py-4 min-h-[78px] flex items-center justify-between w-full">
+        <div className="flex items-center gap-4">
+          <Link href="/dashboard" className="flex items-center gap-3.5 group">
+            <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-xl bg-white p-1.5 flex items-center justify-center shadow-md ring-1 ring-white/20 transition-transform group-hover:scale-105 shrink-0">
+              <Image
+                src="/twic-logo.png"
+                alt="TWIC Project ERP Logo"
+                width={52}
+                height={52}
+                className="w-full h-full object-contain"
+                priority
+              />
             </div>
             <div>
-              <div className="text-xs font-bold tracking-wide uppercase text-slate-100 flex items-center gap-2">
-                <span>TWIC Project Tracker</span>
-                <span className="text-[10px] px-1.5 py-0.2 bg-blue-800/80 text-blue-200 rounded font-mono font-normal">
+              <div className="text-base sm:text-xl font-bold tracking-tight text-white flex items-center gap-2.5">
+                <span className="font-extrabold tracking-wide">TWIC Project ERP</span>
+                <span className="text-[11px] px-2.5 py-0.5 bg-blue-800/90 text-blue-100 border border-blue-600/40 rounded-md font-mono font-medium hidden sm:inline-block shadow-xs">
                   Govt. of Tamil Nadu
                 </span>
               </div>
-              <div className="text-[10px] text-slate-400 font-normal leading-none hidden sm:block">
-                Water & Infrastructure Project Management ERP
+              <div className="text-xs text-slate-300 font-normal leading-tight hidden sm:block mt-0.5">
+                Water &amp; Infrastructure Project Management ERP
               </div>
             </div>
           </Link>
         </div>
 
         {/* Right Info: Profile, Login, Logout, Change Password */}
-        <div className="flex items-center gap-3 text-xs">
+        <div className="flex items-center gap-4 text-xs">
           {isLoggedIn ? (
             <div className="relative">
               {/* Profile Avatar & Name Trigger Button */}
               <button
                 type="button"
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center gap-2 p-1 pl-2 pr-2.5 rounded-xl hover:bg-white/10 transition-colors border border-transparent hover:border-blue-900/60 cursor-pointer"
+                className="flex items-center gap-3 p-1.5 pl-2.5 pr-3.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 hover:border-blue-400/40 cursor-pointer shadow-xs"
               >
-                <div className="w-7 h-7 rounded-full bg-blue-600 border border-blue-400/40 flex items-center justify-center text-[11px] font-black text-white shadow-xs">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-blue-700 to-blue-500 border border-blue-300/40 flex items-center justify-center text-xs sm:text-sm font-black text-white shadow-xs shrink-0">
                   {userInitials || "TW"}
                 </div>
-                <div className="text-left hidden sm:block leading-tight">
-                  <span className="text-white text-xs font-bold block truncate max-w-[140px]">
+                <div className="text-left hidden sm:block leading-snug">
+                  <span className="text-white text-sm font-semibold block truncate max-w-[160px]">
                     {userName}
                   </span>
-                  <span className="text-slate-400 text-[10px] font-mono block">
+                  <span className="text-blue-200 text-[11px] font-mono block">
                     {userRole === "SUPER_ADMIN" ? "Super Admin" : userRole}
                   </span>
                 </div>
-                <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isProfileOpen ? "rotate-180" : ""}`} />
+                <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isProfileOpen ? "rotate-180" : ""}`} />
               </button>
 
               {/* Profile Popover Dropdown */}
               {isProfileOpen && (
-                <div className="absolute right-0 top-11 bg-white text-slate-800 shadow-2xl border border-slate-200 rounded-2xl w-64 py-2 z-50 animate-in fade-in slide-in-from-top-2">
+                <div className="absolute right-0 top-full mt-2 bg-white text-slate-800 shadow-2xl border border-slate-200 rounded-2xl w-64 py-2 z-50 animate-in fade-in slide-in-from-top-2">
                   <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/70">
                     <div className="flex items-center gap-2.5">
                       <div className="w-9 h-9 rounded-full bg-blue-700 text-white font-black text-xs flex items-center justify-center">
@@ -432,9 +488,9 @@ export function TopNavigationBar({
           ) : (
             <Link
               href="/login"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors shadow-xs"
+              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors shadow-xs"
             >
-              <LogIn className="w-3.5 h-3.5" />
+              <LogIn className="w-4 h-4" />
               <span>Sign In / Login</span>
             </Link>
           )}
@@ -442,22 +498,22 @@ export function TopNavigationBar({
           {/* Mobile hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-1 text-slate-300 hover:text-white"
+            className="md:hidden p-2 text-slate-300 hover:text-white rounded-lg hover:bg-white/10"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
       {/* Primary Horizontal Government Menu Bar (Exact MCA Style with vertical separators '|') */}
-      <nav className="bg-[#002244] border-b border-[#003366] text-white hidden md:block">
-        <div className="flex items-stretch overflow-visible">
+      <nav className="bg-[#002244] border-b border-[#003366] text-white hidden md:block w-full relative z-40 overflow-visible">
+        <div className="flex items-stretch overflow-visible px-2 sm:px-4 lg:px-6 w-full">
           {/* HOME Tab */}
           <Link
             href="/dashboard"
-            className={`flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold tracking-wide transition-all whitespace-nowrap uppercase ${
+            className={`flex items-center gap-2 px-4 lg:px-5 py-3.5 text-xs sm:text-[13px] font-bold tracking-wider transition-all whitespace-nowrap uppercase ${
               pathname === "/dashboard"
-                ? "bg-[#003870] text-white border-b-2 border-amber-400"
+                ? "bg-[#003870] text-white border-b-2 border-amber-400 shadow-inner"
                 : "text-slate-200 hover:bg-[#002c59] hover:text-white"
             }`}
           >
@@ -467,10 +523,11 @@ export function TopNavigationBar({
           {/* Vertical Divider */}
           <div className="w-[1px] bg-[#003870] my-2" />
 
-          {/* Module Tabs (ADVISORY, PMC, O&M, USER MANAGEMENT) */}
+          {/* Module Tabs (ADVISORY, PMC, O&M, USER MANAGEMENT, etc.) */}
           {menuSections.map((sec, idx) => {
             const isSelected = activeModule === sec.id;
-            const isHovered = hoveredMenu === sec.id;
+            const isMenuOpen = openMenu === sec.id;
+            const isRightSide = idx >= menuSections.length - 2;
 
             return (
               <React.Fragment key={sec.id}>
@@ -479,77 +536,150 @@ export function TopNavigationBar({
                 <div
                   className="relative group"
                   onMouseEnter={() => handleMenuHover(sec)}
-                  onMouseLeave={() => setHoveredMenu(null)}
+                  onMouseLeave={() => setOpenMenu(null)}
                 >
                   <button
                     type="button"
                     onClick={() => handleSelectModule(sec.id, sec.defaultHref)}
-                    className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold tracking-wide transition-all whitespace-nowrap uppercase cursor-pointer ${
+                    className={`flex items-center gap-1.5 px-3 lg:px-4 xl:px-5 py-3.5 text-xs sm:text-[13px] font-bold tracking-wider transition-all whitespace-nowrap uppercase cursor-pointer select-none ${
                       isSelected
-                        ? "bg-[#003870] text-white border-b-2 border-amber-400"
+                        ? "bg-[#003870] text-white border-b-2 border-amber-400 shadow-inner"
                         : "text-slate-200 hover:bg-[#002c59] hover:text-white"
                     }`}
                   >
                     <span>{sec.title}</span>
-                    <ChevronDown
-                      className={`w-3 h-3 transition-transform ${
-                        isHovered || isSelected ? "rotate-180 text-amber-400" : "text-slate-400"
-                      }`}
-                    />
+                    <span
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMenuToggle(e, sec);
+                      }}
+                      className="p-0.5 hover:text-amber-300 rounded"
+                      title={`Toggle ${sec.title} menu`}
+                    >
+                      <ChevronDown
+                        className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                          isMenuOpen
+                            ? "rotate-180 text-amber-400"
+                            : isSelected
+                            ? "text-amber-400"
+                            : "text-slate-400"
+                        }`}
+                      />
+                    </span>
                   </button>
 
-                  {/* Cascading Sub-parent & Child Flyout Menu (aligned directly next to active base parent) */}
-                  {isHovered && (
+                  {/* Cascading Sub-parent & Child Flyout Menu */}
+                  {isMenuOpen && (
                     <div
-                      className="absolute left-0 top-full bg-[#f8f9fa] border border-slate-300 shadow-xl rounded-b-md w-64 py-0.5 z-50 animate-in fade-in slide-in-from-top-1"
+                      className={`absolute ${
+                        isRightSide ? "right-0" : "left-0"
+                      } top-full bg-[#f8f9fa] border border-slate-300 shadow-2xl rounded-b-lg py-1 z-50 animate-in fade-in slide-in-from-top-1 before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-[''] ${
+                        sec.subParents.length === 1 ? "w-64" : "w-72 sm:w-80"
+                      }`}
                     >
-                      {sec.subParents.map((sp) => {
-                        const isActive = activeSubParentTitle === sp.title;
-
-                        return (
-                          <div
-                            key={sp.title}
-                            onMouseEnter={() => setActiveSubParentTitle(sp.title)}
-                            className="relative group/parent"
-                          >
-                            <div
-                              className={`px-4 py-2.5 text-xs font-semibold cursor-pointer flex items-center justify-between border-b border-slate-200/70 last:border-b-0 transition-colors ${
-                                isActive
-                                  ? "bg-[#002b5f] text-white font-bold shadow-xs"
-                                  : "text-slate-700 hover:bg-slate-200/80 hover:text-slate-900"
-                              }`}
+                      {sec.subParents.length === 1 ? (
+                        // Clean direct dropdown for single-category modules (PROJECT MONITORING, SUBCONTRACTOR, INVOICING & PAYMENTS)
+                        <div>
+                          <div className="px-3.5 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200/70 flex items-center justify-between">
+                            <span>{sec.subParents[0].title}</span>
+                            <Link
+                              href={sec.defaultHref}
+                              onClick={() => {
+                                setActiveModule(sec.id);
+                                setOpenMenu(null);
+                              }}
+                              className="text-blue-600 hover:underline normal-case font-medium text-[11px]"
                             >
-                              <span className="truncate">{sp.title}</span>
-                              <ChevronRight
-                                className={`w-3.5 h-3.5 shrink-0 ${
-                                  isActive ? "text-white" : "text-slate-400"
-                                }`}
-                              />
-                            </div>
+                              Overview →
+                            </Link>
+                          </div>
+                          <div className="divide-y divide-slate-100 py-0.5">
+                            {sec.subParents[0].children.map((child) => (
+                              <Link
+                                key={child.title}
+                                href={child.href}
+                                onClick={() => {
+                                  setActiveModule(sec.id);
+                                  setOpenMenu(null);
+                                }}
+                                className="block px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-[#002b5f] hover:text-white transition-colors"
+                              >
+                                {child.title}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        // 2-tier cascading MCA style flyout for multi-category modules (ADVISORY, PMC, O&M, USER MANAGEMENT)
+                        sec.subParents.map((sp) => {
+                          const isActive = activeSubParentTitle === sp.title;
 
-                            {/* Child Flyout Menu positioned directly adjacent to this base parent item */}
-                            {isActive && sp.children && sp.children.length > 0 && (
-                              <div className="absolute left-full top-0 w-auto min-w-[240px] max-w-md bg-white border border-slate-300 shadow-xl rounded-r-md rounded-bl-md py-0.5 flex flex-col z-50 animate-in fade-in slide-in-from-left-1">
-                                <div className="divide-y divide-slate-100">
-                                  {sp.children.map((child) => (
+                          return (
+                            <div
+                              key={sp.title}
+                              onMouseEnter={() => setActiveSubParentTitle(sp.title)}
+                              className="relative group/parent"
+                            >
+                              <div
+                                className={`px-4 py-2.5 text-xs font-semibold cursor-pointer flex items-center justify-between border-b border-slate-200/70 last:border-b-0 transition-colors ${
+                                  isActive
+                                    ? "bg-[#002b5f] text-white font-bold shadow-xs"
+                                    : "text-slate-700 hover:bg-slate-200/80 hover:text-slate-900"
+                                }`}
+                              >
+                                <span className="truncate">{sp.title}</span>
+                                <ChevronRight
+                                  className={`w-3.5 h-3.5 shrink-0 ${
+                                    isActive
+                                      ? isRightSide
+                                        ? "rotate-180 text-white"
+                                        : "text-white"
+                                      : "text-slate-400"
+                                  }`}
+                                />
+                              </div>
+
+                              {/* Child Flyout Menu positioned directly adjacent to this base parent item */}
+                              {isActive && sp.children && sp.children.length > 0 && (
+                                <div
+                                  className={`absolute ${
+                                    isRightSide ? "right-full mr-0.5" : "left-full ml-0.5"
+                                  } top-0 w-auto min-w-[260px] max-w-md bg-white border border-slate-300 shadow-2xl rounded-md py-1 flex flex-col z-50 animate-in fade-in`}
+                                >
+                                  <div className="px-3 py-1.5 bg-slate-50 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                                    <span>{sp.title}</span>
                                     <Link
-                                      key={child.title}
-                                      href={child.href}
+                                      href={sec.defaultHref}
                                       onClick={() => {
                                         setActiveModule(sec.id);
-                                        setHoveredMenu(null);
+                                        setOpenMenu(null);
                                       }}
-                                      className="block px-4 py-2.5 text-xs font-medium text-slate-800 hover:bg-slate-100 hover:text-[#002244] transition-colors whitespace-nowrap"
+                                      className="text-blue-600 hover:underline normal-case font-medium text-[11px]"
                                     >
-                                      {child.title}
+                                      Overview →
                                     </Link>
-                                  ))}
+                                  </div>
+                                  <div className="divide-y divide-slate-100">
+                                    {sp.children.map((child) => (
+                                      <Link
+                                        key={child.title}
+                                        href={child.href}
+                                        onClick={() => {
+                                          setActiveModule(sec.id);
+                                          setOpenMenu(null);
+                                        }}
+                                        className="block px-4 py-2.5 text-xs font-medium text-slate-800 hover:bg-blue-50 hover:text-[#002244] transition-colors whitespace-nowrap"
+                                      >
+                                        {child.title}
+                                      </Link>
+                                    ))}
+                                  </div>
                                 </div>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
+                              )}
+                            </div>
+                          );
+                        })
+                      )}
                     </div>
                   )}
                 </div>
@@ -561,9 +691,9 @@ export function TopNavigationBar({
           <div className="w-[1px] bg-[#003870] my-2" />
           <Link
             href="/overview"
-            className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold tracking-wide transition-all whitespace-nowrap uppercase ${
+            className={`flex items-center gap-2 px-5 py-3.5 text-xs sm:text-[13px] font-bold tracking-wider transition-all whitespace-nowrap uppercase ${
               pathname === "/overview"
-                ? "bg-[#003870] text-white border-b-2 border-amber-400"
+                ? "bg-[#003870] text-white border-b-2 border-amber-400 shadow-inner"
                 : "text-slate-300 hover:bg-[#002c59] hover:text-white"
             }`}
           >

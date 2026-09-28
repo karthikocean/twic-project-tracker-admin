@@ -145,9 +145,13 @@ export default function PaymentsPage() {
   return (
     <AppLayout>
       <PageHeader
-        title="Payment Disbursements & Collections"
+        title="Payment Status & Settlements"
         subtitle="Real-time banking reconciliation, treasury settlement ledger, and electronic fund transfers"
-        breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }, { label: "Payments" }]}
+        breadcrumbs={[
+          { label: "Dashboard", href: "/dashboard" },
+          { label: "Invoicing & Payments", href: "/invoices/client" },
+          { label: "Payment Status" },
+        ]}
         actions={
           <div className="flex items-center gap-2">
             <ExportButton

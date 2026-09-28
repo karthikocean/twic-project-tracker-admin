@@ -22,7 +22,7 @@ interface HeaderProps {
   title?: string;
 }
 
-export function Header({ onToggleSidebar, title = "TWIC Project Tracker" }: HeaderProps) {
+export function Header({ onToggleSidebar, title = "TWIC Project ERP" }: HeaderProps) {
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
