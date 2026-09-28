@@ -135,7 +135,7 @@ export default function RolesPage() {
               className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-[#032b5f] hover:bg-[#021f45] rounded-xl transition-all shadow-xs hover:shadow-md cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              <span>+ Add Role</span>
+              <span>Add Role</span>
             </Link>
           </div>
         </div>

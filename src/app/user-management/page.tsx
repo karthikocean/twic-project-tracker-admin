@@ -165,7 +165,7 @@ export default function UserManagementPage() {
               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#002b5f] hover:bg-[#001f44] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>+ Create Officer Account</span>
+              <span>Create Officer Account</span>
             </Link>
           </div>
         }

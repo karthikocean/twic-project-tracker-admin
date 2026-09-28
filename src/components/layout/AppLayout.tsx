@@ -15,8 +15,8 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
       {/* MCA Government Style Top Navigation Bar */}
       <TopNavigationBar />
 
-      {/* Main Full-Width Content Viewport */}
-      <main className="flex-1 w-full p-4 md:p-5 lg:p-6">
+      {/* Main Full-Width Content Viewport - Space-optimized for enterprise ERP data tables */}
+      <main className="flex-1 w-full px-4 py-3 sm:px-6 sm:py-3.5">
         <div className="w-full">{children}</div>
       </main>
     </div>
