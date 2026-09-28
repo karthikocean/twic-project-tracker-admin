@@ -335,22 +335,29 @@ export function TopNavigationBar({
 
   return (
     <header ref={navRef} className="relative z-50 w-full select-none">
-      {/* Top Banner (Government Identification Header) - Optimized Height & Spacing */}
-      <div className="bg-[#001733] border-b border-[#00264d] text-white px-4 sm:px-6 lg:px-8 py-2 h-14 sm:h-15 flex items-center justify-between w-full">
-        <div className="flex items-center gap-4">
-          <Link href="/dashboard" className="flex items-center gap-3 group">
-            {/* Seamless TWIC Logo Container */}
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/[0.08] hover:bg-white/[0.12] border border-white/10 p-1.5 flex items-center justify-center shadow-xs transition-colors shrink-0">
-              <TwicLogo className="w-full h-full text-white" />
+      {/* Top Banner (Government Identification Header) - Full Width & Proper Height */}
+      <div className="bg-[#001733] border-b border-[#00264d] text-white px-6 sm:px-8 lg:px-10 py-5 sm:py-6 min-h-[96px] sm:min-h-[104px] flex items-center justify-between w-full">
+        <div className="flex items-center gap-4 sm:gap-5">
+          <Link href="/dashboard" className="flex items-center gap-3.5 sm:gap-4 group">
+            {/* Original White TWIC Logo Card */}
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-white p-2 flex items-center justify-center shadow-lg ring-2 ring-white/10 transition-transform group-hover:scale-105 shrink-0">
+              <Image
+                src="/twic-logo.png"
+                alt="TWIC Project ERP Logo"
+                width={56}
+                height={56}
+                className="w-full h-full object-contain"
+                priority
+              />
             </div>
             <div>
-              <div className="text-sm sm:text-base font-bold tracking-tight text-white flex items-center gap-2.5">
-                <span className="tracking-wide font-extrabold text-white">TWIC Project ERP</span>
-                <span className="text-[10px] px-2 py-0.5 bg-blue-500/20 text-blue-200 border border-blue-400/30 rounded-md font-mono font-medium hidden sm:inline-block">
+              <div className="text-lg sm:text-2xl font-black tracking-tight text-white flex items-center gap-3">
+                <span className="tracking-wide">TWIC Project ERP</span>
+                <span className="text-xs px-2.5 py-0.5 bg-blue-800/90 text-blue-100 border border-blue-600/40 rounded-lg font-mono font-semibold hidden sm:inline-block shadow-xs">
                   Govt. of Tamil Nadu
                 </span>
               </div>
-              <div className="text-[11px] text-slate-400 font-normal leading-none hidden md:block">
+              <div className="text-xs sm:text-sm text-slate-300 font-medium leading-normal hidden sm:block mt-0.5">
                 Water &amp; Infrastructure Project Management ERP
               </div>
             </div>
@@ -358,11 +365,11 @@ export function TopNavigationBar({
         </div>
 
         {/* Right Info: Settings, Profile, Login, Logout */}
-        <div className="flex items-center gap-2 sm:gap-3 text-xs">
+        <div className="flex items-center gap-3 sm:gap-4 text-xs">
           {/* Quick Settings Gear Link */}
           <Link
             href="/settings"
-            className="p-1.5 text-slate-300 hover:text-white rounded-lg hover:bg-white/10 transition-colors hidden sm:flex items-center justify-center"
+            className="p-2 text-slate-300 hover:text-white rounded-xl hover:bg-white/10 transition-colors hidden sm:flex items-center justify-center border border-white/10"
             title="System Settings"
             aria-label="System Settings"
           >
@@ -377,16 +384,16 @@ export function TopNavigationBar({
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                 aria-expanded={isProfileOpen}
                 aria-haspopup="true"
-                className="flex items-center gap-2.5 p-1.5 pl-2.5 pr-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/10 hover:border-blue-400/40 cursor-pointer shadow-xs"
+                className="flex items-center gap-3 p-1.5 pl-2.5 pr-3.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/15 hover:border-blue-400/40 cursor-pointer shadow-md"
               >
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-blue-700 to-blue-500 border border-blue-300/40 flex items-center justify-center text-xs font-bold text-white shadow-xs shrink-0">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-blue-700 to-blue-500 border border-blue-300/40 flex items-center justify-center text-xs sm:text-sm font-bold text-white shadow-xs shrink-0">
                   {userInitials || "TW"}
                 </div>
                 <div className="text-left hidden sm:block leading-tight">
-                  <span className="text-white text-xs font-semibold block truncate max-w-[150px]">
+                  <span className="text-white text-xs sm:text-sm font-bold block truncate max-w-[170px]">
                     {userName}
                   </span>
-                  <span className="text-blue-300 text-[10px] font-mono block">
+                  <span className="text-blue-200 text-xs font-mono block">
                     {userRole === "SUPER_ADMIN" ? "Super Admin" : userRole}
                   </span>
                 </div>
@@ -529,11 +536,11 @@ export function TopNavigationBar({
 
       {/* Primary Horizontal Government Menu Bar (Exact MCA Style with vertical separators '|') */}
       <nav className="bg-[#002244] border-b border-[#003366] text-white hidden md:block w-full relative z-40 overflow-visible" aria-label="Main Navigation">
-        <div className="flex items-stretch overflow-visible px-2 sm:px-4 lg:px-6 w-full h-10">
+        <div className="flex items-stretch overflow-visible px-4 sm:px-6 lg:px-8 w-full min-h-[44px]">
           {/* HOME Tab */}
           <Link
             href="/dashboard"
-            className={`flex items-center gap-1.5 px-3 lg:px-4 text-xs font-semibold tracking-wider transition-all whitespace-nowrap uppercase ${
+            className={`flex items-center gap-2 px-4 sm:px-5 lg:px-6 py-2.5 text-xs sm:text-[13px] font-bold tracking-wider transition-all whitespace-nowrap uppercase ${
               pathname === "/dashboard"
                 ? "bg-[#003870] text-white border-b-2 border-amber-400 shadow-inner"
                 : "text-slate-200 hover:bg-[#002c59] hover:text-white"
@@ -565,7 +572,7 @@ export function TopNavigationBar({
                     onClick={() => handleSelectModule(sec.id, sec.defaultHref)}
                     aria-expanded={isMenuOpen}
                     aria-haspopup="true"
-                    className={`flex items-center gap-1 px-2 lg:px-3 xl:px-3.5 text-xs font-semibold tracking-wide transition-all whitespace-nowrap uppercase cursor-pointer select-none ${
+                    className={`flex items-center gap-1.5 px-3 sm:px-4 lg:px-5 xl:px-5.5 py-2.5 text-xs sm:text-[13px] font-bold tracking-wider transition-all whitespace-nowrap uppercase cursor-pointer select-none ${
                       isSelected
                         ? "bg-[#003870] text-white border-b-2 border-amber-400 shadow-inner"
                         : "text-slate-200 hover:bg-[#002c59] hover:text-white"
@@ -581,7 +588,7 @@ export function TopNavigationBar({
                       title={`Toggle ${sec.title} menu`}
                     >
                       <ChevronDown
-                        className={`w-3 h-3 transition-transform duration-200 ${
+                        className={`w-3.5 h-3.5 transition-transform duration-200 ${
                           isMenuOpen
                             ? "rotate-180 text-amber-400"
                             : isSelected
@@ -605,18 +612,8 @@ export function TopNavigationBar({
                       {sec.subParents.length === 1 ? (
                         // Clean direct dropdown for single-category modules
                         <div>
-                          <div className="px-3.5 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200/70 flex items-center justify-between">
+                          <div className="px-3.5 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-200/70">
                             <span>{sec.subParents[0].title}</span>
-                            <Link
-                              href={sec.defaultHref}
-                              onClick={() => {
-                                setActiveModule(sec.id);
-                                setOpenMenu(null);
-                              }}
-                              className="text-blue-600 hover:underline normal-case font-medium text-[11px]"
-                            >
-                              Overview →
-                            </Link>
                           </div>
                           <div className="divide-y divide-slate-100 py-0.5">
                             {sec.subParents[0].children.map((child) => (
@@ -673,18 +670,8 @@ export function TopNavigationBar({
                                     isRightSide ? "right-full mr-0.5" : "left-full ml-0.5"
                                   } top-0 w-auto min-w-[260px] max-w-md bg-white border border-slate-300 shadow-2xl rounded-md py-1 flex flex-col z-50 animate-in fade-in`}
                                 >
-                                  <div className="px-3 py-1.5 bg-slate-50 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                                  <div className="px-3 py-1.5 bg-slate-50 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                                     <span>{sp.title}</span>
-                                    <Link
-                                      href={sec.defaultHref}
-                                      onClick={() => {
-                                        setActiveModule(sec.id);
-                                        setOpenMenu(null);
-                                      }}
-                                      className="text-blue-600 hover:underline normal-case font-medium text-[11px]"
-                                    >
-                                      Overview →
-                                    </Link>
                                   </div>
                                   <div className="divide-y divide-slate-100">
                                     {sp.children.map((child) => (
@@ -716,13 +703,13 @@ export function TopNavigationBar({
           })}
 
           {/* Master Flow Map Utility Pill Button */}
-          <div className="ml-auto flex items-center pl-2">
+          <div className="ml-auto flex items-center pl-4 pr-1">
             <Link
               href="/overview"
-              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all ${
+              className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs sm:text-[13px] font-semibold transition-all ${
                 pathname === "/overview"
-                  ? "bg-blue-600 text-white shadow-xs border border-blue-400 font-semibold"
-                  : "bg-white/[0.08] hover:bg-white/[0.15] text-slate-200 hover:text-white border border-white/10"
+                  ? "bg-blue-600 text-white shadow-xs border border-blue-400 font-bold"
+                  : "bg-white/[0.08] hover:bg-white/[0.15] text-slate-100 hover:text-white border border-white/15"
               }`}
               title="Master Flow Map & Architecture"
             >
